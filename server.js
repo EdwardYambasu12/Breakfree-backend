@@ -14,7 +14,8 @@ app.use(cors({
     "http://192.168.165.23:8080",
     "http://192.168.11.23:8080",
     "http://192.168.128.23:8081",
-    "http://192.168.184.23:8080"
+    "http://192.168.184.23:8080",
+    "https://breakfree-healing.vercel.app"
   ],
   credentials: true
 }));
