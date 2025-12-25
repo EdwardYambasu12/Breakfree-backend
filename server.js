@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
+const { default: axios } = require('axios');
 require('dotenv').config();
 
 const app = express();
@@ -44,6 +45,47 @@ app.use((req, res, next) => {
   // Continue to next middleware
   next();
 }); 
+app.get('/ping', (req, res) => {
+  res.json({
+    status: 'alive',
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+    message: 'Server is awake'
+  });
+});
+
+
+const KEEP_ALIVE_URL = 'https://breakfree-backend-w8jc.onrender.com/ping';
+const KEEP_ALIVE_INTERVAL = 60 * 1000; // 1 minute
+
+let keepAliveCount = 0;
+let lastKeepAliveSuccess = null;
+
+const keepAlive = () => {
+  const startTime = Date.now();
+  
+  https.get(KEEP_ALIVE_URL, (res) => {
+    const responseTime = Date.now() - startTime;
+    keepAliveCount++;
+    lastKeepAliveSuccess = new Date();
+    
+    if (res.statusCode === 200) {
+      console.log(`Keep-alive #${keepAliveCount} | Status: ${res.statusCode} | Response: ${responseTime}ms`);
+    } else {
+      console.log(`Keep-alive #${keepAliveCount} | Status: ${res.statusCode}`);
+    }
+  }).on('error', (err) => {
+    console.error(`Keep-alive #${keepAliveCount} failed:`, err.message);
+  });
+};
+
+setTimeout(() => {
+  console.log('Starting keep-alive system...');
+  keepAlive();
+  setInterval(keepAlive, KEEP_ALIVE_INTERVAL);
+}, 30000);
+
+
 
 // Routes
 app.use('/api/auth', require('./src/routes/auth.routes'));
