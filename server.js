@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
-const { default: axios } = require('axios');
+const axios = require('axios');
 require('dotenv').config();
 
 const app = express();
@@ -13,6 +13,8 @@ app.use(helmet());
 app.use(cors({
   origin: [
     "http://192.168.165.23:8080",
+    "https://breakfree-backend-w8jc.onrender.com",
+    "www.breakfree-backend-w8jc.onrender.com",
     "http://192.168.11.23:8080",
     "http://192.168.128.23:8081",
     "http://192.168.184.23:8080",
